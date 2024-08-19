@@ -1,0 +1,51 @@
+---
+batch_connect:
+  template: vnc
+cluster: "<%= cluster%>"
+
+script:
+  queue_name: "<%= node_type %>"
+  native:
+    - "-J"
+    - "ood_matlab"
+    - "-N"
+    - "1"
+    <%- unless node_type == "dev" -%>
+    - "--cpus-per-task"
+    - "<%= num_cores %>"
+    <%- if mem_type == "nodememory" -%>
+    - "--mem"
+    - "<%= node_num_memory %>G"
+    <%- end -%>
+    <%- end -%>
+
+    <%- if mem_type == "corememory" -%>
+    - "--mem-per-cpu"
+    - "<%= core_num_memory %>G"
+    <%- end -%>
+
+    - "--output=matlab_open_ondemand.log"
+
+    <%- if node_type == "gpu" or node_type == "bii-gpu" -%>
+    - "<%= gpu_type %><%= num_gpu%>"
+    <%- end -%>
+
+    <%- if gpu_type == "NVIDIA A100 40GB" -%>
+    - "--constraint=40gb"
+    <%- end -%>
+    <%- if gpu_type == "NVIDIA A100 80GB" -%>
+    - "--constraint=80gb"
+    <%- end -%>
+    <%- if gpu_type == "GPUPOD" -%>
+    - "--constraint=gpupod"
+    <%- end -%>
+
+    <%- if node_type == "interactive" and gpu_type_interactive == "Yes" -%>
+    - "<%= interactive_options%><%= num_gpu_interactive%>"
+    <%- end -%>
+
+    <%- unless option.strip.empty? -%>
+      <%- option.each_line do |line| -%>
+    - "<%= line.strip %>"
+      <%- end -%>
+    <%- end -%>

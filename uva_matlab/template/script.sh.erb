@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+<%- gpu = context.node_type.include?("gpu") -%>
+
+# Clean the environment
+module purge
+
+# Set working directory to home directory
+cd "${HOME}"
+
+# Fix dconf error
+export XDG_RUNTIME_DIR="/tmp/${UID}"
+
+# Fix the Java errors relating to resizing the window
+cat << JAVA_OPT > java.opts
+-Dsun.java2d.xrender=false
+JAVA_OPT
+
+/usr/bin/loginctl enable-linger $SLURM_JOB_USER
+
+#
+# Launch Mate Window Manager and Panel
+#
+
+marco --no-composite --no-force-fullscreen --sm-disable &
+# mate-panel blocks, but does not work reliably when launched in the same subshell as marco
+mate-panel &
+
+eval $(dbus-launch --sh-syntax)
+
+
+#
+# Start MATLAB
+#
+
+
+# Load the required environment
+module load <%= context.version %>
+
+# Launch MATLAB
+<%- if gpu -%>
+#module load intel/16.0.3 virtualgl
+module list
+set -x
+vglrun matlab -desktop -nosoftwareopengl
+<%- else -%>
+module list
+set -x
+matlab -desktop
+<%- end -%>

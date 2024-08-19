@@ -1,0 +1,166 @@
+# Batch Connect app configuration file
+#
+# @note Used to define the submitted cluster, title, description, and
+#   hard-coded/user-defined attributes that make up this Batch Connect app.
+---
+batch_connect:
+  template: "basic"
+# **MUST** set cluster id here that matches cluster configuration file located
+# under /etc/ood/config/clusters.d/*.yml
+# @example Use the Owens cluster at Ohio Supercomputer Center
+#     cluster: "owens"
+# cluster: "rivanna"
+
+form:
+  - version
+  - modules
+  - cluster
+  - node_type
+  #- bc_num_slots
+  - bc_num_hours
+  - num_cores
+  - mem_type
+  - node_num_memory
+  - core_num_memory
+  - bc_account
+  - gpu_type
+  - num_gpu
+  - gpu_type_interactive
+  - interactive_options
+  - num_gpu_interactive
+  - mode
+  - option
+  - extra_group
+  - bc_email_on_started
+
+
+attributes:
+  modules: "matlab/R2019a"
+  num_cores:
+    widget: "number_field"
+    label: "Number of cores"
+    value: 1
+    min: 1
+    max: 40
+    step: 1
+  mem_type:
+    widget: select
+    label: "Memory type"
+    options:
+      - [ "Memory per node", "nodememory", data-hide-core-num-memory: true]
+      - [ "Memory per core", "corememory", data-hide-node-num-memory: true]
+  node_num_memory:
+    widget: "number_field"
+    label: "Memory Request in GB ( maximum 384G total )"
+    value: 6
+    min: 6
+    max: 384
+    step: 1
+  core_num_memory:
+    widget: "number_field"
+    label: "Memory Request in GB ( maximum 384G total )"
+    value: 1
+    min: 1
+    max: 16
+    step: 1  
+  bc_account:
+    label: "Allocation (Research or Class MyGroup) - lowercase-only"
+    help: |
+     - [MyGroup]
+
+     [Mygroup]: https://mygroups.virginia.edu/groups/ 
+  node_type:
+    widget: select
+    label: "Rivanna Partition"
+    options:
+      - [ "Interactive", "interactive", data-hide-gpu-type: true, data-hide-num-gpu: true, data-max-num-cores: 24, data-max-core-num-memory: 16]
+      - [ "Standard", "standard", data-hide-gpu-type: true, data-hide-num-gpu: true, data-hide-gpu-type-interactive: true, data-hide-num-gpu-interactive: true, data-max-num-cores: 40, data-max-core-num-memory: 9, data-hide-interactive-options: true]
+      - [ "GPU", "gpu", data-hide-gpu-type-interactive: true, data-hide-num-gpu-interactive: true, data-max-num-cores: 28, data-max-core-num-memory: 13, data-hide-interactive-options: true]
+      - [ "BII", "bii", data-hide-gpu-type: true, data-hide-num-gpu: true, data-hide-gpu-type-interactive: true, data-hide-num-gpu-interactive: true, data-max-num-cores: 40, data-max-core-num-memory: 9, data-hide-interactive-options: true]
+      - [ "BII-GPU", "bii-gpu", data-hide-gpu-type-interactive: true, data-hide-num-gpu-interactive: true, data-max-num-cores: 40, data-max-core-num-memory: 9, data-hide-interactive-options: true]
+    help: |
+      - **Interactive** - (*1-24 core*) Rivanna node in the interactive partition.
+      - **Standard** - (*1-40 cores*) Rivanna node in the standard partition.
+      - **GPU** - (*1-28 cores*) Rivanna node that has NVIDIA GPU.
+      - **Bii,Bii-gpu** - (*1-40 cores*) Partition for Biocomplexity Institute and Initiative.
+      - **Learn More** - [Rivanna Queuing Policies]
+
+      [Rivanna Queuing Policies]: https://www.rc.virginia.edu/userinfo/rivanna/queues/
+  work_dir:
+    widget: select
+    label: "Work Directory"
+    options:
+      - [ "SCRATCH",     "--notebook-dir=/scratch/"     ]
+      - [ "HOME",     "--notebook-dir=/home/"     ]
+      - [ "PROJECT",     "--notebook-dir=/project/"     ]
+      - [ "STANDARD",     "--notebook-dir=/standard/"     ]
+  cluster:
+    widget: select
+    label: "Cluster"
+    options:
+      - [ "Rivanna",     "rivanna"     ]
+      - [ "Afton",     "afton"     ]
+  gpu_type:
+    widget: select
+    label: "Optional: GPU type for GPU partition"
+    options:
+      - [ "default",     "--gres=gpu:"     ]
+      - [ "NVIDIA A100",     "--gres=gpu:a100:"     ]
+      - [ "NVIDIA A100 40GB",     "--gres=gpu:a100:"     ]
+      - [ "NVIDIA A100 80GB",     "--gres=gpu:a100:"     ]
+      - [ "NVIDIA A6000",     "--gres=gpu:a6000:"     ]
+      - [ "NVIDIA V100",     "--gres=gpu:v100:"     ]
+      - [ "NVIDIA A40",     "--gres=gpu:a40:"     ]
+      - [ "GPUPOD",     "--gres=gpu:"     ]
+
+  interactive_options:
+    widget: select
+    label: "Optional: GPU type"
+    options:
+      - [ "default",     "--gres=gpu:"     ]
+      - [ "RTX 2080",     "--gres=gpu:rtx2080:"     ]
+      - [ "RTX 3090",     "--gres=gpu:rtx3090:"     ]
+      
+  num_gpu:
+    widget: "number_field"
+    label: "Optional: Number of GPUs ( 1 ~ 4)"
+    value: 1
+    min: 1
+    max: 4
+    step: 1
+  gpu_type_interactive:
+    widget: select
+    label: "Optional: GPU for Interactive partition"
+    options:
+      - ["No", "No", data-hide-num-gpu-interactive: true, data-hide-interactive-options: true]
+      - ["Yes", "Yes" ]
+  num_gpu_interactive:
+    widget: "number_field"
+    label: "Optional: Number of GPUs ( 1 ~ 2)"
+    value: 1
+    min: 1
+    max: 2
+    step: 1
+  version:
+    widget: select
+    label: "MATLAB version"
+    help: "This defines the version of MATLAB you want to load."
+    options:
+      - [ "R2023b", "matlab/R2023b" ]
+      - [ "R2022b", "matlab/R2022b" ]
+      - [ "R2022a", "matlab/R2022a" ]
+      - [ "R2021b", "matlab/R2021b" ]
+      - [ "R2021a", "matlab/R2021a" ]
+      - [ "R2020b", "matlab/R2020b" ]
+      - [ "R2020a", "matlab/R2020a" ]
+  mode:
+    widget: select
+    label: "Show Additional Options"
+    options:
+      - ["No", "No", data-hide-option: true, data-hide-extra-group: true ]
+      - ["Yes", "Yes" ]
+  option:
+    label: "Optional: Slurm Option ( Reservation, Constraint )"
+    widget: text_area
+  extra_group:
+    label: "Optional: MyGroup (for access to software or storage due to NFS 16 group limit)"
