@@ -18,16 +18,15 @@ script:
     - "<%= node_num_memory %>G"
     <%- end -%>
     <%- end -%>
-    - " --constraint"
-    - "<%= cluster%>"
+
     <%- if mem_type == "corememory" -%>
     - "--mem-per-cpu"
     - "<%= core_num_memory %>G"
     <%- end -%>
 
-    - "--output=matlab_open_ondemand.log"
+    - "--output=mathematica_open_ondemand.log"
 
-    <%- if node_type == "gpu" or node_type == "bii-gpu" -%>
+    <%- if node_type == "gpu"  or node_type == "bii-gpu" -%>
     - "<%= gpu_type %><%= num_gpu%>"
     <%- end -%>
 

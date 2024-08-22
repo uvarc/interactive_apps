@@ -1,0 +1,7 @@
+---
+name: PySpark
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch JupyterLab with PySpark. Select the "Python 3" kernel in your notebook.

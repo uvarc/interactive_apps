@@ -1,0 +1,11 @@
+---
+name: MATHEMATICA
+category: Interactive Apps
+subcategory: GUIs
+role: batch_connect
+description: |
+  This app will launch a [MATHEMATICA] on the [Rivanna cluster]. You will be able
+  to interact with the MATHEMATICA through a VNC session.
+
+  [MATHEMATICA]: https://www.wolfram.com/mathematica/
+  [Rivanna cluster]: https://www.rc.virginia.edu/userinfo/rivanna/software/matlab/
