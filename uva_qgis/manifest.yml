@@ -1,0 +1,12 @@
+---
+name: QGIS
+category: Interactive Apps
+subcategory: GUIs
+role: batch_connect
+description: |
+  This app will launch a [QGIS] GUI on the [Rivanna Cluster] using a **shared
+  node**. You will be able to interact with the QGIS GUI through a VNC
+  session.
+
+  [QGIS]: https://qgis.org/en/site/
+  [Rivanna cluster]: https://www.rc.virginia.edu/userinfo/rivanna/overview/

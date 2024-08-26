@@ -3,17 +3,14 @@
 # @note Used to define the submitted cluster, title, description, and
 #   hard-coded/user-defined attributes that make up this Batch Connect app.
 ---
-batch_connect:
-  template: "basic"
+
 # **MUST** set cluster id here that matches cluster configuration file located
 # under /etc/ood/config/clusters.d/*.yml
 # @example Use the Owens cluster at Ohio Supercomputer Center
 #     cluster: "owens"
-# cluster: "rivanna"
+cluster: "rivanna"
 
 form:
-  - version
-  - modules
   - node_type
   #- bc_num_slots
   - bc_num_hours
@@ -34,7 +31,6 @@ form:
 
 
 attributes:
-  modules: "matlab/R2019a"
   num_cores:
     widget: "number_field"
     label: "Number of cores"
@@ -85,20 +81,6 @@ attributes:
       - **Learn More** - [Rivanna Queuing Policies]
 
       [Rivanna Queuing Policies]: https://www.rc.virginia.edu/userinfo/rivanna/queues/
-  work_dir:
-    widget: select
-    label: "Work Directory"
-    options:
-      - [ "SCRATCH",     "--notebook-dir=/scratch/"     ]
-      - [ "HOME",     "--notebook-dir=/home/"     ]
-      - [ "PROJECT",     "--notebook-dir=/project/"     ]
-      - [ "STANDARD",     "--notebook-dir=/standard/"     ]
-  # cluster:
-  #   widget: select
-  #   label: "Cluster"
-  #   options:
-  #     - [ "Rivanna",     "rivanna"     ]
-  #     - [ "Afton",     "afton"     ]
   gpu_type:
     widget: select
     label: "Optional: GPU type for GPU partition"
@@ -111,7 +93,7 @@ attributes:
       - [ "NVIDIA V100",     "--gres=gpu:v100:"     ]
       - [ "NVIDIA A40",     "--gres=gpu:a40:"     ]
       - [ "GPUPOD",     "--gres=gpu:"     ]
-
+  
   interactive_options:
     widget: select
     label: "Optional: GPU type"
@@ -119,7 +101,7 @@ attributes:
       - [ "default",     "--gres=gpu:"     ]
       - [ "RTX 2080",     "--gres=gpu:rtx2080:"     ]
       - [ "RTX 3090",     "--gres=gpu:rtx3090:"     ]
-      
+
   num_gpu:
     widget: "number_field"
     label: "Optional: Number of GPUs ( 1 ~ 4)"
@@ -140,18 +122,6 @@ attributes:
     min: 1
     max: 2
     step: 1
-  version:
-    widget: select
-    label: "MATLAB version"
-    help: "This defines the version of MATLAB you want to load."
-    options:
-      - [ "R2023b", "matlab/R2023b" ]
-      - [ "R2022b", "matlab/R2022b" ]
-      - [ "R2022a", "matlab/R2022a" ]
-      - [ "R2021b", "matlab/R2021b" ]
-      - [ "R2021a", "matlab/R2021a" ]
-      - [ "R2020b", "matlab/R2020b" ]
-      - [ "R2020a", "matlab/R2020a" ]
   mode:
     widget: select
     label: "Show Additional Options"

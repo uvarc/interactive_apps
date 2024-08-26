@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Load the required environment
+setup_env () {
+  module purge
+  # If you want to use Singularity it is recommended you setup a module similar
+  # to the included `example_module` and load it as:
+  #
+  #     module use "/path/to/example_module/modulefiles"
+  #     module load singularity rstudio_singularity/3.4.3
+  #
+  # Bonus points if you install the `example_module` on the system so you don't
+  # need to run `module use`.
+  module load <%= context.modules %>
+  export R_LIBS_USER=$HOME/R/goolf/4.3
+}
+setup_env
+
+#
+# Start RStudio Server
+#
+
+# PAM auth helper used by RStudio
+export RSTUDIO_AUTH="${PWD}/bin/auth"
+
+# Generate an `rsession` wrapper script
+export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
+(
+umask 077
+sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
+  #!/usr/bin/env bash
+  # Log all output from this script
+  export RSESSION_LOG_FILE="${RSTUDIO_SINGULARITY_HOST_MNT}${PWD}/rsession.log"
+  exec &>>"\${RSESSION_LOG_FILE}"
+
+  #
+  $(declare -f setup_env)
+  setup_env
+
+  # Load the SLURM environment
+  $(declare -xp | grep SLURM)
+
+  # Launch the original command
+  echo "Launching rsession..."
+  set -x
+  exec rsession --r-libs-user "${R_LIBS_USER}" "\${@}"
+EOL
+)
+chmod 700 "${RSESSION_WRAPPER_FILE}"
+
+# Define launcher for `rserver` if not using Singularity
+#if [[ -z "${RSTUDIO_SINGULARITY_IMAGE}" ]]; then
+#  PROOT_BIN="${PROOT_BIN:-"/usr/local/proot/bin/proot-x86_64"}"
+#  RSERVER_LAUNCHER="${PROOT_BIN} -b $(mktemp -d):/tmp "
+#fi
+
+# Set working directory to home directory
+cd "${HOME}"
+
+# Output debug info
+module list
+
+# generate TMPDIR
+export TMPDIR=`mktemp -d`
+
+echo $TMPDIR
+export RSTUDIO_CONFIG_DIR="$TMPDIR"
+export XDG_DATA_HOME="$TMPDIR/.data"
+export XDG_CACHE_HOME="$TMPDIR/.cache"
+mkdir "$XDG_DATA_HOME" "$XDG_CACHE_HOME"
+export RS_LOG_DIR="$TMPDIR/log"
+echo -e "provider=sqlite\\ndirectory=$TMPDIR/db" >> "$TMPDIR/db.conf"
+
+# Launch the RStudio Server
+echo "Starting up rserver..."
+hostname
+set -x
+
+<%- if context.extra_group.blank? -%>
+rserver --server-user="$USER"\
+        --database-config-file="$TMPDIR/db.conf"\
+        --server-data-dir="$TMPDIR/sdd"\
+        --secure-cookie-key-file="$TMPDIR/secure-cookie-key"\
+        --server-daemonize=0 --www-port=$port
+<% else %>
+sg <%= context.extra_group %> -c 'rserver \
+        --server-user="$USER"\
+        --database-config-file="$TMPDIR/db.conf"\
+        --server-data-dir="$TMPDIR/sdd"\
+        --secure-cookie-key-file="$TMPDIR/secure-cookie-key"\
+        --server-daemonize=0 --www-port=$port
+<% end %>

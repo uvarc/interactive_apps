@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Load the required environment
+setup_env () {
+  module purge
+  module load apptainer
+}
+setup_env
+
+# Set working directory to PBS directory
+cd "${HOME}"
+
+#
+# Launch Xfce Window Manager and Panel
+#
+
+#(
+#  export SEND_256_COLORS_TO_REMOTE=1
+#  export XDG_CONFIG_HOME="<%= session.staged_root.join("config") %>"
+#  export XDG_DATA_HOME="<%= session.staged_root.join("share") %>"
+#  export XDG_CACHE_HOME="$(mktemp -d)"
+#  module restore
+#  set -x
+#  xfwm4 --compositor=off --daemon --sm-client-disable
+#  xsetroot -solid "#D3D3D3"
+#  xfsettingsd --sm-client-disable
+#  xfce4-panel --sm-client-disable
+#) &
+
+# Fix dconf error
+export XDG_RUNTIME_DIR="/tmp/${UID}"
+
+# Fix the Java errors relating to resizing the window
+cat << JAVA_OPT > java.opts
+-Dsun.java2d.xrender=false
+JAVA_OPT
+
+/usr/bin/loginctl enable-linger $SLURM_JOB_USER
+
+#
+# Launch Mate Window Manager and Panel
+#
+
+marco --no-composite --no-force-fullscreen --sm-disable &
+# mate-panel blocks, but does not work reliably when launched in the same subshell as marco
+mate-panel &
+
+eval $(dbus-launch --sh-syntax)
+
+#
+# Start QGIS
+#
+
+<%- if context.extra_group.blank? -%>
+apptainer run /share/resources/containers/singularity/qgis/qgis.sif
+<% else %>
+sg <%= context.extra_group %> -c 'apptainer run /share/resources/containers/singularity/qgis/qgis.sif'
+<% end %>

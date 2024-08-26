@@ -1,0 +1,13 @@
+---
+name: Code Server
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch a [VS Code] server using [Code Server] on the [Rivanna Cluster].
+  Python users please see [instructions].
+
+  [VS Code]:  https://code.visualstudio.com/
+  [Code Server]: https://coder.com/
+  [Rivanna cluster]: https://www.rc.virginia.edu/userinfo/rivanna/overview/
+  [instructions]: https://rc.virginia.edu/userinfo/rivanna/software/code-server/#using-code-server

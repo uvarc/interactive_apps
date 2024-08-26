@@ -1,11 +1,30 @@
+<%-
+  ppn   = num_cores.blank? ? 28 : num_cores.to_i
+  props = case node_type
+          when "hugemem"
+            ":ppn=48"
+          else
+            ":ppn=#{ppn}"
+          end
+-%>
 ---
 batch_connect:
-  template: vnc
+  template: "basic"
+  conn_params:
+    - csrf_token
+#script:
+#  <%- if node_type == "debug" -%>
+#  queue_name: "debug"
+#  <%- end -%>
+#  native:
+#    resources:
+#      nodes: "1<%= props %>"
+
 script:
   queue_name: "<%= node_type %>"
   native:
     - "-J"
-    - "ood_matlab"
+    - "ood_rstudio"
     - "-N"
     - "1"
     <%- unless node_type == "dev" -%>
@@ -21,9 +40,9 @@ script:
     - "<%= core_num_memory %>G"
     <%- end -%>
 
-    - "--output=mathematica_open_ondemand.log"
+    - "--output=rstudio_open_ondemand.log"
 
-    <%- if node_type == "gpu"  or node_type == "bii-gpu" -%>
+    <%- if node_type == "gpu" or node_type == "bii-gpu" -%>
     - "<%= gpu_type %><%= num_gpu%>"
     <%- end -%>
 
@@ -46,3 +65,4 @@ script:
     - "<%= line.strip %>"
       <%- end -%>
     <%- end -%>
+

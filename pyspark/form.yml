@@ -13,7 +13,6 @@
 form:
   - version
   - modules
-  - cluster
   - node_type
   #- bc_num_slots
   - bc_num_hours
@@ -132,7 +131,6 @@ attributes:
     options:
       - ["No", "No", data-hide-num-gpu-interactive: true, data-hide-interactive-options: true]
       - ["Yes", "Yes" ]
-
   
   num_gpu_interactive:
     widget: "number_field"

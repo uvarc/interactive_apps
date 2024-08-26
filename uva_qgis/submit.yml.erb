@@ -5,7 +5,7 @@ script:
   queue_name: "<%= node_type %>"
   native:
     - "-J"
-    - "ood_matlab"
+    - "ood_qgis"
     - "-N"
     - "1"
     <%- unless node_type == "dev" -%>
@@ -21,9 +21,9 @@ script:
     - "<%= core_num_memory %>G"
     <%- end -%>
 
-    - "--output=mathematica_open_ondemand.log"
+    - "--output=qgis_open_ondemand.log"
 
-    <%- if node_type == "gpu"  or node_type == "bii-gpu" -%>
+    <%- if node_type == "gpu" or node_type == "bii-gpu" -%>
     - "<%= gpu_type %><%= num_gpu%>"
     <%- end -%>
 
@@ -46,3 +46,4 @@ script:
     - "<%= line.strip %>"
       <%- end -%>
     <%- end -%>
+

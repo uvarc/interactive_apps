@@ -13,7 +13,6 @@
 form:
   # - version
   - modules
-  - cluster
   - node_type
   #- bc_num_slots
   - bc_num_hours
@@ -141,5 +140,6 @@ attributes:
       - ["Yes", "Yes" ]
   option:
     label: "Optional: Slurm Option ( Reservation, Constraint )"
+    widget: text_area
   extra_group:
     label: "Optional: MyGroup (for access to software or storage due to NFS 16 group limit)"
